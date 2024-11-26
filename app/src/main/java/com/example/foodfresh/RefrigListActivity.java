@@ -13,6 +13,8 @@ public class RefrigListActivity extends AppCompatActivity {
     private ListView refrig_lv;
     private RefrigListAdapter refrig_adapter;
     private Button refrig_add_btn;
+    private Button goto_statistic_btn;
+    private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class RefrigListActivity extends AppCompatActivity {
 
         refrig_lv = findViewById(R.id.RefrigList_listview);
         refrig_add_btn = findViewById(R.id.refrig_add_button);
+        goto_statistic_btn = findViewById(R.id.goto_statistic_button);
 
         refrig_adapter = new RefrigListAdapter();
         // 초기 데이터
@@ -45,6 +48,17 @@ public class RefrigListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(RefrigListActivity.this, AddRefrigActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        goto_statistic_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RefrigListActivity.this, StatisticActivity.class);
+                user_id = "1206";
+                intent.putExtra("사용자 id", user_id); // intent 테스트용
+                startActivity(intent);
+//                finish();
             }
         });
     }
