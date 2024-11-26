@@ -32,14 +32,29 @@
             </ListView>
         </ScrollView>
 
-        <Button
-            android:id="@+id/refrig_add_button"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="냉장고 추가"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center">
+            <Button
+                android:id="@+id/refrig_add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="냉장고 추가"
+                android:layout_gravity="center_horizontal"/>
+            <Space
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/goto_statistic_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="통계 화면 이동"
+                android:backgroundTint="@color/blue_dark"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
