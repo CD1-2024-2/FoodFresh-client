@@ -54,7 +54,7 @@ public class RefrigListActivity extends AppCompatActivity {
         goto_statistic_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RefrigListActivity.this, StatisticActivity.class);
+                Intent intent = new Intent(RefrigListActivity.this, ConsumptionLogActivity.class);
                 user_id = "1206";
                 intent.putExtra("사용자 id", user_id); // intent 테스트용
                 startActivity(intent);
