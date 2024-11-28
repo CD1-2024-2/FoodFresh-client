@@ -1,11 +1,13 @@
 package com.example.foodfresh;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.time.LocalDate;
 
 public class ConsumptionLogActivity extends AppCompatActivity {
@@ -13,7 +15,6 @@ public class ConsumptionLogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consumption_log);
-
         ListView lv = findViewById(R.id.consumption_listview);
 
         ConsumptionListAdapter adapter = new ConsumptionListAdapter();
@@ -25,5 +26,12 @@ public class ConsumptionLogActivity extends AppCompatActivity {
         }
         lv.setAdapter(adapter);
 
+        Button button = findViewById(R.id.goto_piechart_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ConsumptionLogActivity.this, PieChartActivity.class));
+            }
+        });
     }
 }

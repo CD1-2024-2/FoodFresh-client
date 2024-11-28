@@ -12,11 +12,18 @@ public class ConsumptionListItem {
             "기타"
     };
 
-    static int[] colors = {
+    static int[] tag_colors = {
             0xff32a8b8,
             0xffba0c00,
             0xffeb8e02,
             0xff02b302
+    };
+
+    static int[] pie_chart_colors = {
+            0xff03fcf4,
+            0xffff4056,
+            0xffffaf40,
+            0xff53ff40
     };
 
     private String id;

@@ -15,6 +15,11 @@
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/goto_piechart_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="pie chart" />
     <TextView
         android:layout_margin="8dp"
         android:text="소모 기록"

@@ -65,7 +65,7 @@ public class ConsumptionListAdapter extends BaseAdapter {
         tag_tv.setText(ConsumptionListItem.tags[item.getTag()]);
 
         GradientDrawable background = (GradientDrawable) ContextCompat.getDrawable(context, R.drawable.rounded_background);
-        background.setColor(ConsumptionListItem.colors[item.getTag()]);
+        background.setColor(ConsumptionListItem.tag_colors[item.getTag()]);
         tag_tv.setBackground(background);
 
         amount_tv.setText(item.getAmount());
