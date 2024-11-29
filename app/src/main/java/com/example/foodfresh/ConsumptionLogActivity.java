@@ -26,11 +26,19 @@ public class ConsumptionLogActivity extends AppCompatActivity {
         }
         lv.setAdapter(adapter);
 
-        Button button = findViewById(R.id.goto_piechart_button);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button button1 = findViewById(R.id.goto_piechart_button);
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ConsumptionLogActivity.this, PieChartActivity.class));
+            }
+        });
+
+        Button button2 = findViewById(R.id.goto_linechart_button);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ConsumptionLogActivity.this, LineChartActivity.class));
             }
         });
     }

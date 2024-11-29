@@ -26,7 +26,7 @@ public class PieChartActivity extends AppCompatActivity {
         PieChart pieChart = findViewById(R.id.pie_chart);
         ArrayList<PieEntry> entries = new ArrayList();
         for (String tag: ConsumptionListItem.tags) {
-            entries.add(new PieEntry((float)Math.floor(Math.random()*10), tag));
+            entries.add(new PieEntry((float)Math.floor(Math.random()*100), tag));
         }
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(ConsumptionListItem.pie_chart_colors);
@@ -42,7 +42,7 @@ public class PieChartActivity extends AppCompatActivity {
         pieChart.setHoleRadius(40f);
         pieChart.setTransparentCircleRadius(40f);
         pieChart.setEntryLabelTextSize(0f);
-        pieChart.animateY(500);
+        pieChart.animateY(600);
 
         Legend legend = pieChart.getLegend();
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.CENTER);
@@ -54,11 +54,12 @@ public class PieChartActivity extends AppCompatActivity {
         pieChart.invalidate();
 
         TableLayout tableLayout = findViewById(R.id.table);
-        tableLayout.setLayoutParams(new TableLayout.LayoutParams(
+        TableLayout.LayoutParams t_params = new TableLayout.LayoutParams(
                 TableLayout.LayoutParams.MATCH_PARENT,
                 TableLayout.LayoutParams.WRAP_CONTENT
-        ));
-        tableLayout.setPadding(16, 16, 16, 16);
+        );
+        t_params.setMargins(64, 64, 64, 64);
+        tableLayout.setLayoutParams(t_params);
 
         for (int i = 0; i < ConsumptionListItem.tags.length; i++) {
             TableRow tableRow = new TableRow(this);
@@ -71,7 +72,7 @@ public class PieChartActivity extends AppCompatActivity {
                 TextView tv = new TextView(this);
 
                 if (j == 0) tv.setText(ConsumptionListItem.tags[i]);
-                if (j == 1) tv.setText(Integer.toString((int)Math.floor(Math.random()*10)));
+                if (j == 1) tv.setText(Integer.toString((int)Math.floor(Math.random()*100)));
                 if (j == 2) tv.setText(String.format("(%.1f", Math.random()*100)+" %)");
 
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -81,8 +82,8 @@ public class PieChartActivity extends AppCompatActivity {
                 tv.setBackgroundColor(Color.LTGRAY);
                 if (j != 0) tv.setGravity(android.view.Gravity.RIGHT);
 
-                TableRow.LayoutParams tv_params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f);
-                tv_params.setMargins(4, 4, 4, 4);
+                TableRow.LayoutParams tv_params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, j == 0 ? 1f : .6f);
+                tv_params.setMargins(8, 8, 8, 8);
                 tv.setPadding(16, 16, 16, 16);
                 tv.setLayoutParams(tv_params);
 

@@ -19,7 +19,14 @@
         android:id="@+id/goto_piechart_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="pie chart" />
+    <Button
+        android:id="@+id/goto_linechart_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="line chart" />
     <TextView
         android:layout_margin="8dp"
         android:text="소모 기록"
