@@ -21,6 +21,15 @@
             android:name=".StatisticActivity"
             android:exported="false" />
         <activity
+            android:name=".ConsumptionLogActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PieChartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LineChartActivity"
+            android:exported="false" />
+        <activity
             android:name=".PopupMemberActivity"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Dialog" />

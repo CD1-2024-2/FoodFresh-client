@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="visible"
+    tools:visibility="visible" >
+    <TextView
+        android:layout_margin="16dp"
+        android:text="통계 및 분석"
+        android:textSize="14pt"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/goto_piechart_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="pie chart" />
+    <Button
+        android:id="@+id/goto_linechart_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="line chart" />
+    <TextView
+        android:layout_margin="8dp"
+        android:text="소모 기록"
+        android:textSize="12pt"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <View
+        android:background="@color/gray_light"
+        android:layout_width="match_parent"
+        android:layout_height="8px"
+        android:layout_margin="12dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:fillViewport="true">
+        <ListView
+            android:id="@+id/consumption_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </ListView>
+    </ScrollView>
+
+</LinearLayout>
