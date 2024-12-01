@@ -14,7 +14,8 @@ public class FoodListActivity extends AppCompatActivity {
     String refrig_id;
     private ListView food_lv;
     private FoodListAdapter food_adapter;
-    private Button food_add_btn;
+    private Button food_manual_btn;
+    private Button food_camera_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +25,8 @@ public class FoodListActivity extends AppCompatActivity {
         this.refrig_id = intent.getStringExtra("냉장고 id");
 
         food_lv = findViewById(R.id.foodList_listview);
-        food_add_btn = findViewById(R.id.food_add_button);
+        food_manual_btn = findViewById(R.id.food_manual_button);
+        food_camera_btn = findViewById(R.id.food_camera_button);
 
         food_adapter = new FoodListAdapter();
         // 초기 데이터
@@ -44,10 +46,19 @@ public class FoodListActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), "RefrigList -> Refrig", Toast.LENGTH_SHORT).show();
             }
         });
-        food_add_btn.setOnClickListener(new View.OnClickListener() {
+
+        food_manual_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FoodListActivity.this, CameraActivity.class);
+                Intent intent = new Intent(FoodListActivity.this, AddFoodActivity.class);
+                intent.putExtra("냉장고 id", refrig_id);
+                startActivity(intent);
+            }
+        });
+        food_camera_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FoodListActivity.this, AddFoodCameraActivity.class);
                 intent.putExtra("냉장고 id", refrig_id);
                 startActivity(intent);
             }

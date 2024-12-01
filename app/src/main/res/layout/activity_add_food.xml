@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FoodDataActivity">
-
+    tools:context=".AddFoodActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,7 +16,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:text="제품 정보"
+                android:text="제품 등록 - 직접 입력"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:layout_width="match_parent"
@@ -28,7 +27,7 @@
                 android:layout_marginBottom="10dp" />
 
             <ImageView
-                android:id="@+id/FoodData_item_imageview"
+                android:id="@+id/addFood_item_imageview"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_centerInParent="true"
@@ -37,9 +36,9 @@
                 android:id="@+id/space"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_below="@+id/FoodData_item_imageview" />
-            <TextView
-                android:id="@+id/foodData_barcode_textview"
+                android:layout_below="@+id/addFood_item_imageview" />
+            <EditText
+                android:id="@+id/addFood_barcode_edittext"
                 android:text="바코드 번호"
                 android:textSize="20dp"
                 android:background="@drawable/shape_food_info"
@@ -66,8 +65,8 @@
                 android:layout_height="40dp"
                 android:src="@drawable/baseline_shopping_cart_24"
                 android:layout_margin="5dp"/>
-            <TextView
-                android:id="@+id/foodData_name_textview"
+            <EditText
+                android:id="@+id/addFood_name_edittext"
                 android:text="식품명"
                 android:textSize="20dp"
                 android:textColor="@color/black"
@@ -101,8 +100,8 @@
                     android:layout_height="40dp"
                     android:src="@drawable/baseline_calendar_month_24"
                     android:layout_margin="5dp"/>
-                <TextView
-                    android:id="@+id/foodData_mfd_textview"
+                <EditText
+                    android:id="@+id/addFood_mfd_edittext"
                     android:text="제조일자"
                     android:textSize="20dp"
                     android:textColor="@color/black"
@@ -129,8 +128,8 @@
                     android:layout_height="40dp"
                     android:src="@drawable/baseline_calendar_month_24"
                     android:layout_margin="5dp"/>
-                <TextView
-                    android:id="@+id/foodData_efd_textview"
+                <EditText
+                    android:id="@+id/addFood_efd_edittext"
                     android:text="유통기한"
                     android:textSize="20dp"
                     android:textColor="@color/black"
@@ -160,8 +159,8 @@
                     android:layout_height="40dp"
                     android:src="@drawable/baseline_local_offer_24"
                     android:layout_margin="5dp"/>
-                <TextView
-                    android:id="@+id/foodData_category_textview"
+                <EditText
+                    android:id="@+id/addFood_category_edittext"
                     android:text="카테고리"
                     android:textSize="20dp"
                     android:textColor="@color/black"
@@ -188,8 +187,8 @@
                     android:layout_height="40dp"
                     android:src="@drawable/baseline_shopping_basket_24"
                     android:layout_margin="5dp"/>
-                <TextView
-                    android:id="@+id/foodData_num_textview"
+                <EditText
+                    android:id="@+id/addFood_num_edittext"
                     android:text="수량"
                     android:textSize="20dp"
                     android:textColor="@color/black"
@@ -215,8 +214,8 @@
                 android:layout_height="40dp"
                 android:src="@drawable/baseline_edit_note_24"
                 android:layout_margin="5dp"/>
-            <TextView
-                android:id="@+id/foodData_note_textview"
+            <EditText
+                android:id="@+id/addFood_note_edittext"
                 android:text="기타 메모"
                 android:textSize="20dp"
                 android:textColor="@color/black"
@@ -235,6 +234,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -242,17 +242,15 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp">
-        <Button
-            android:id="@+id/foodData_post_button"
-            android:text="저장"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <Space
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="1 / 1"
+            android:textSize="20dp"
+            android:textColor="@color/black"/>
         <Button
-            android:id="@+id/foodData_del_button"
-            android:text="삭제"
+            android:id="@+id/addFood_post_btn"
+            android:text="등록하기"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

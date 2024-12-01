@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- 카메라 권한 허용 설정 (이하 3줄) -->
+    <!-- 네트워크 권한 허용 설정 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 카메라 권한 허용 설정 (3줄) -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
@@ -13,10 +14,25 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodFresh"
         tools:replace="android:appComponentFactory"
         tools:targetApi="31">
+        <activity
+            android:name=".PopupDeleteActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".AddFoodCameraActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PopupCameraActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity
+            android:name=".AddFoodActivity"
+            android:exported="false" />
         <activity
             android:name=".StatisticActivity"
             android:exported="false" />
@@ -40,16 +56,13 @@
             android:name=".AddMemberActivity"
             android:exported="false" />
         <activity
-            android:name=".SigninActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".AddRefrigActivity"
             android:exported="false" />
         <activity
             android:name=".FoodDataActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CameraActivity"
             android:exported="false" />
         <activity
             android:name=".RefrigListActivity"

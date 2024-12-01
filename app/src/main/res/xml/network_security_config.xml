@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+CLEARTEXT communication to 43.202.43.14 not permitted by network security policy
+안드로이드 9.0 이후 부터 네트워크 사용시 https 를 강제하므로 http 주소를 접근 허용하기 위한 파일
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">43.202.43.14:8080</domain>
+    </domain-config>
+</network-security-config>
