@@ -11,12 +11,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
             android:text="냉장고 추가"
             android:textSize="20dp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,15 +65,21 @@
                 android:textColorHint="@color/gray_default" />
         </LinearLayout>
 
-        <CheckedTextView
-            android:id="@+id/checkedTextView_isMaster"
-            android:layout_width="250dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:text="공유 냉장고 인가요?"
-            android:textSize="20dp"
-            android:checkMark="?android:listChoiceIndicatorMultiple"/>
+            android:layout_marginTop="30dp">
+            <TextView
+                android:text="공유 냉장고 인가요?"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/refrig_add_post_button"
