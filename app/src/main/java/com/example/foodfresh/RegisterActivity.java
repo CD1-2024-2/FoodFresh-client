@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterDM registerDM = new RegisterDM(id, nickname, password);
 
                 Call<String> call;
-                call = RetrofitClientScalar.getApiService().register_api_post(registerDM);
+                call = RetrofitClient.getApiService().register_api_post(registerDM);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
