@@ -40,12 +40,12 @@ public class LoginActivity extends AppCompatActivity {
                 String password = password_edtv.getText().toString();
                 LoginDM loginDM = new LoginDM(id, password);
 
-                // 임시 넘어가기 버튼
-                Intent intent = new Intent(LoginActivity.this, RefrigListActivity.class);
-                startActivity(intent);
-                finish();
+//                // 임시 넘어가기 버튼
+//                Intent intent = new Intent(LoginActivity.this, RefrigListActivity.class);
+//                startActivity(intent);
+//                finish();
                 
-                /*Call<UserInfoTest> call;
+                Call<UserInfoTest> call;
                 call = RetrofitClient.getApiService().login_api_post(loginDM);
                 call.enqueue(new Callback<UserInfoTest>() {
                     @Override
@@ -55,9 +55,10 @@ public class LoginActivity extends AppCompatActivity {
                             message_tv.setText("로그인에 실패했습니다.");
                             return;
                         }
-                        UserInfoTest LoginResponse = response.body();
+                        UserInfoTest loginResponse = response.body();
                         Log.d("연결 성공", response.body().toString());
                         Intent intent = new Intent(LoginActivity.this, RefrigListActivity.class);
+                        intent.putExtra("userInfo", loginResponse);
                         startActivity(intent);
                         finish();
                     }
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                         message_tv.setText("로그인에 실패했습니다.");
                         return;
                     }
-                });*/
+                });
             }
         });
     }

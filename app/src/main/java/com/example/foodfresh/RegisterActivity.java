@@ -48,18 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = password_edtv.getText().toString();
                 RegisterDM registerDM = new RegisterDM(id, nickname, password);
 
-                Call call;
-                call = RetrofitClient.getApiService().register_api_post(registerDM);
-                call.enqueue(new Callback() {
+                Call<String> call;
+                call = RetrofitClientScalar.getApiService().register_api_post(registerDM);
+                call.enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call call, Response response) {
+                    public void onResponse(Call<String> call, Response<String> response) {
                         if(!response.isSuccessful()) {
                             Log.e("연결 비정상", Integer.toString(response.code()));
                             Log.e("연결 비정상", response.toString());
                             message_tv.setText("회원가입에 실패했습니다.");
                             return;
                         }
-//                        RegisterDM RegisterResponse = response.body();
+                        String registerResponse = response.body();
                         Log.d("연결 성공", response.body().toString());
                         Intent intent = getParentActivityIntent();
                         startActivity(intent);
@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call call, Throwable t) {
+                    public void onFailure(Call<String> call, Throwable t) {
                         Log.v("연결 실패", t.getMessage());
                         message_tv.setText("회원가입에 실패했습니다.");
                         return;

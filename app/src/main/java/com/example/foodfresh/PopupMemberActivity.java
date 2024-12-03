@@ -23,8 +23,14 @@ public class PopupMemberActivity extends AppCompatActivity {
         Button close_btn = findViewById(R.id.popUp_close_btn);
 
         Intent intent = getIntent();
-//        List memberList = (List)intent.getSerializableExtra("memberList");
-        test_tv.setText("냉장고 id: " + intent.getStringExtra("냉장고 id"));
+        String manger = intent.getStringExtra("소유자 이름");
+        String[] sharedUsers = (String[])intent.getSerializableExtra("공유자 목록");
+
+        String str = "소유자: " + manger;
+        for (int i=0; i<sharedUsers.length; i++) {
+            str += "\n공유자" + (i+1) + ": "+ sharedUsers[i];
+        }
+        test_tv.setText(str);
 
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override

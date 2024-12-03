@@ -14,7 +14,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class RefrigListAdapter extends BaseAdapter {
-    ArrayList<RefrigListItem> refrigers = new ArrayList<RefrigListItem>();
+//    ArrayList<RefrigListItem> refrigers = new ArrayList<RefrigListItem>();
+    ArrayList<RefrigDM> refrigers = new ArrayList<RefrigDM>();
     Context context;
 
     @Override
@@ -23,7 +24,7 @@ public class RefrigListAdapter extends BaseAdapter {
     }
 
     @Override
-    public RefrigListItem getItem(int i) {
+    public RefrigDM getItem(int i) {
         return refrigers.get(i);
     }
 
@@ -32,7 +33,7 @@ public class RefrigListAdapter extends BaseAdapter {
         return i;
     }
 
-    public void addItem(RefrigListItem refriger) {
+    public void addItem(RefrigDM refriger) {
         refrigers.add(refriger);
     }
 
@@ -40,7 +41,7 @@ public class RefrigListAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         context = parent.getContext();
-        RefrigListItem refriglistItem = refrigers.get(position);
+        RefrigDM refriglistItem = refrigers.get(position);
 
         // 기존 View 가 없다면 convertView 에 listview_refriglist 를 inflate
         if (convertView == null) {
@@ -59,9 +60,9 @@ public class RefrigListAdapter extends BaseAdapter {
         // 데이터 set
         name_tv.setText(refriglistItem.getName());
         description_tv.setText("공유 냉장고");
-        if (refriglistItem.isPrivate()) description_tv.setText("개인 냉장고");
-        num_tv.setText(Integer.toString(refriglistItem.getNum()));
-        date_tv.setText(refriglistItem.getDate());
+        if (!refriglistItem.isShared()) description_tv.setText("개인 냉장고");
+        num_tv.setText(Integer.toString(refriglistItem.getSharedUsers().length+1));
+//        date_tv.setText(refriglistItem.getDate());
 
         // delete 이미지 버튼 클릭 이벤트
         delete_iv.setOnClickListener(new View.OnClickListener() {
@@ -90,9 +91,11 @@ public class RefrigListAdapter extends BaseAdapter {
         curr_mem_iv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String id_db = (refrigers.get(position)).getId();
+                String manger = (refrigers.get(position)).getManager();
+                String[] sharedUsers = (refrigers.get(position)).getSharedUsers();
                 Intent intent = new Intent(context, PopupMemberActivity.class);
-                intent.putExtra("냉장고 id", id_db);
+                intent.putExtra("소유자 이름", manger);
+                intent.putExtra("공유자 목록", sharedUsers);
                 ((Activity)context).startActivity(intent);
             }
         });
