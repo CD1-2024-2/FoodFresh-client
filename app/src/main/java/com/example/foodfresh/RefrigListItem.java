@@ -2,10 +2,10 @@ package com.example.foodfresh;
 
 public class RefrigListItem {
     private String id;
+    private boolean isPrivate;
     private String name;
     private int num;
     private String date;
-    private boolean isPrivate;
 
     public String getId() {
         return id;
