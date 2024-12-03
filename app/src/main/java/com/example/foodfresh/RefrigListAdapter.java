@@ -17,6 +17,12 @@ public class RefrigListAdapter extends BaseAdapter {
 //    ArrayList<RefrigListItem> refrigers = new ArrayList<RefrigListItem>();
     ArrayList<RefrigDM> refrigers = new ArrayList<RefrigDM>();
     Context context;
+    private String user_id;
+
+    public RefrigListAdapter() {}
+    public RefrigListAdapter(String user_id){
+        this.user_id = user_id;
+    }
 
     @Override
     public int getCount() {
@@ -48,7 +54,7 @@ public class RefrigListAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.listview_refriglist, parent, false);
         }
-        // 화면에 보여질 데이터를 참조 image, text etc...
+
         TextView name_tv = convertView.findViewById(R.id.refrig_name_textview);
         TextView description_tv  = convertView.findViewById((R.id.description_textview));
         TextView num_tv = convertView.findViewById(R.id.num_members_textview);
@@ -71,7 +77,7 @@ public class RefrigListAdapter extends BaseAdapter {
 //                Toast.makeText(getContext(), (position+1)+"번째 아이템이 삭제됩니다.", Toast.LENGTH_SHORT).show();
                 String id_db = (refrigers.get(position)).getId();
                 Log.d("삭제: 냉장고", "UI id : " + position + "\nDB id : " + id_db);
-//                delete_refrig(id_db);    // DB에 해당 냉장고 삭제 요청
+                // TODO: 냉장고 삭제 요청
                 refrigers.remove(position);
                 notifyDataSetChanged();
             }
@@ -83,6 +89,7 @@ public class RefrigListAdapter extends BaseAdapter {
             public void onClick(View view) {
                 String id_db = (refrigers.get(position)).getId();
                 Intent intent = new Intent(context, AddMemberActivity.class);
+                intent.putExtra("사용자 id", id_db);
                 intent.putExtra("냉장고 id", id_db);
                 ((Activity)context).startActivity(intent);
             }

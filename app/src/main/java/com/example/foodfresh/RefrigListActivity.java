@@ -42,6 +42,7 @@ public class RefrigListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         userinfo = (LoginActivity.UserInfoTest)intent.getSerializableExtra("userInfo");
+        user_id = userinfo.getId();
 //        msg_tv.setText(userinfo.getAll());
         message_tv.setText(null);
 
@@ -60,7 +61,7 @@ public class RefrigListActivity extends AppCompatActivity {
                 List<RefrigDM> refirgResponse = response.body();
                 Log.d("연결 성공", refirgResponse.get(0).getManager());
 
-                refrig_adapter = new RefrigListAdapter();
+                refrig_adapter = new RefrigListAdapter(user_id);
                 for (int i=0; i<refirgResponse.size(); i++) {
                     refrig_adapter.addItem(refirgResponse.get(i));
                 }
@@ -94,6 +95,7 @@ public class RefrigListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RefrigListActivity.this, AddRefrigActivity.class);
+                intent.putExtra("사용자 id", user_id);
                 startActivity(intent);
             }
         });
@@ -102,8 +104,7 @@ public class RefrigListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RefrigListActivity.this, ConsumptionLogActivity.class);
-                user_id = "1206";
-                intent.putExtra("사용자 id", user_id); // intent 테스트용
+                intent.putExtra("사용자 id", user_id);
                 startActivity(intent);
 //                finish();
             }

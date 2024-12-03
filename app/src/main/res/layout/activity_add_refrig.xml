@@ -80,12 +80,29 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/refrigAdd_post_button"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="추가하기"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="20dp"/>
+            android:layout_margin="20dp">
+
+            <TextView
+                android:id="@+id/refrigAdd_message_textview"
+                android:text="Any test text can be here"
+                android:textSize="10dp"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/refrigAdd_post_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="추가하기"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
