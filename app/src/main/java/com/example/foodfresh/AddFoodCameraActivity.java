@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -151,88 +152,7 @@ public class AddFoodCameraActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == RESULT_OK) {
                         Intent intent = result.getData();
-                        Uri uri = intent.getData();
-                        try {
-                            InputStream inputStream = getContentResolver().openInputStream(uri);
-                            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
-                            int bufferSize = 1024;
-                            byte[] buffer = new byte[bufferSize];
-
-                            int len;
-                            while ((len = inputStream.read(buffer)) != -1) {
-                                byteBuffer.write(buffer, 0, len);
-                            }
-                            byte[] fileBytes = byteBuffer.toByteArray();
-
-                            // Base64로 인코딩
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                OkHttpClient client = new OkHttpClient.Builder()
-                                        .addNetworkInterceptor(new Interceptor() {
-                                            @Override
-                                            public Response intercept(Chain chain) throws IOException {
-                                                Request request = chain.request().newBuilder().addHeader("Connection", "close").build();
-                                                return chain.proceed(request);
-                                            }
-                                        })
-                                        .connectTimeout(0, TimeUnit.MILLISECONDS)
-                                        .readTimeout(0, TimeUnit.MILLISECONDS)
-                                        .writeTimeout(0, TimeUnit.MILLISECONDS).build();
-                                JSONObject json = new JSONObject();
-                                json.put("image", Base64.getEncoder().encodeToString(fileBytes));
-
-                                // RequestBody 생성
-                                RequestBody body = RequestBody.create(
-                                        MediaType.get("application/json; charset=utf-8"),
-                                        json.toString()
-                                );
-                                // 요청 생성
-                                Request request = new Request.Builder()
-                                        .url("http://10.0.2.2:5000/analyse")
-                                        .post(body)
-                                        .build();
-
-                                // 요청 실행 및 응답 처리
-                                client.newCall(request).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(Call call, IOException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                    @Override
-                                    public void onResponse(Call call, Response response) throws IOException {
-                                        if (response.isSuccessful()) {
-
-                                            runOnUiThread(new Runnable() {
-                                                BufferedSource source = response.body().source();
-                                                String json = source.readString(Charset.forName("UTF-8"));
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        JSONArray jsonArray = new JSONArray(json);
-                                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                                            Log.d("test", "json"+i);
-                                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                                            String date = jsonObject.getString("date");
-                                                            String image = jsonObject.getString("image");
-                                                            String barcode = jsonObject.getString("barcode");
-                                                            String tag = jsonObject.getString("tag");
-                                                            barcode_edtv.setText(barcode);
-                                                            efd_edtv.setText(date);
-                                                            name_edtv.setText(tag);
-                                                            byte[] decode = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
-                                                            item_iv.setImageBitmap(BitmapFactory.decodeByteArray(decode, 0, decode.length));
-                                                        }
-                                                    } catch (Exception e) {
-                                                        Log.e("Error: ", e.toString());
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                });
-                            }
-                        } catch (Exception e) {
-                        }
+                        analyseImage(intent.getData());
                     }
                 }
             }
@@ -321,4 +241,90 @@ public class AddFoodCameraActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "권한 거부됨", Toast.LENGTH_SHORT).show();
         }
     };
+
+    private void analyseImage(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            byte[] fileBytes = byteBuffer.toByteArray();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .addNetworkInterceptor(new Interceptor() {
+                            @Override
+                            public Response intercept(Chain chain) throws IOException {
+                                Request request = chain.request().newBuilder().addHeader("Connection", "close").build();
+                                return chain.proceed(request);
+                            }
+                        })
+                        .connectTimeout(0, TimeUnit.MILLISECONDS)
+                        .readTimeout(0, TimeUnit.MILLISECONDS)
+                        .writeTimeout(0, TimeUnit.MILLISECONDS).build();
+                JSONObject json = new JSONObject();
+                json.put("image", Base64.getEncoder().encodeToString(fileBytes));
+
+                Dialog dialog = new LoadingDialog(this);
+                dialog.setCancelable(false);
+                dialog.show();
+
+                RequestBody body = RequestBody.create(
+                        MediaType.get("application/json; charset=utf-8"),
+                        json.toString()
+                );
+                Request request = new Request.Builder()
+                        .url("http://10.0.2.2:5000/analyse")
+                        .post(body)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        dialog.dismiss();
+                        if (response.isSuccessful()) {
+                            runOnUiThread(new Runnable() {
+                                BufferedSource source = response.body().source();
+                                String json = source.readString(Charset.forName("UTF-8"));
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONArray jsonArray = new JSONArray(json);
+                                        for (int i = 0; i < jsonArray.length(); i++) {
+                                            Log.d("test", "json"+i);
+                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                            String date = jsonObject.getString("date");
+                                            String image = jsonObject.getString("image");
+                                            String barcode = jsonObject.getString("barcode");
+                                            String tag = jsonObject.getString("tag");
+                                            barcode_edtv.setText(barcode);
+                                            efd_edtv.setText(date);
+                                            name_edtv.setText(tag);
+                                            byte[] decode = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
+                                            item_iv.setImageBitmap(BitmapFactory.decodeByteArray(decode, 0, decode.length));
+                                        }
+                                    } catch (Exception e) {
+                                        Log.e("Error: ", e.toString());
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.e("Error: ", e.toString());
+        }
+    }
 }
