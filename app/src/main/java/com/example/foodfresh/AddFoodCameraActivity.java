@@ -10,7 +10,6 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,9 +20,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -37,16 +33,15 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -62,14 +57,28 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSource;
 
+class FoodData {
+    String name, exdate, barcode;
+    Bitmap image;
+    public FoodData(String name, String exdate, String barcode, Bitmap image) {
+        this.name = name;
+        this.exdate = exdate;
+        this.barcode = barcode;
+        this.image = image;
+    }
+}
+
 public class AddFoodCameraActivity extends AppCompatActivity {
+    private int foodCnt;
     // 카메라
     private static final int REQUEST_IMAGE_CAPTURE = 672;
     private String imageFilePath;
+    private String userId, received_data;
     private File photoFile; // 촬영 or 선택한 이미지 파일
-    private TextView test_tv;
+    private TextView test_tv, page_tv;
     private ImageView item_iv;
     private EditText barcode_edtv, name_edtv, mfd_edtv, efd_edtv, category_edtv, num_edtv, note_edtv;
+    ArrayList<FoodData> foodDataList = new ArrayList<FoodData>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +94,14 @@ public class AddFoodCameraActivity extends AppCompatActivity {
         num_edtv = findViewById(R.id.addFoodCam_num_edittext);
         note_edtv = findViewById(R.id.addFoodCam_note_edittext);
         Button post_btn = findViewById(R.id.addFoodCam_post_btn);
+        Button cancel_btn = findViewById(R.id.addFoodCam_cancel_btn);
         test_tv = findViewById(R.id.addFoodCam_message_textview);
+        page_tv = findViewById(R.id.addFoodCam_page_textview);
 
         // 냉장고 id 등 받아오기
         Intent received_intent = getIntent();
-        String received_data = received_intent.getStringExtra("냉장고 id");
+        userId = received_intent.getStringExtra("유저 id");
+        received_data = received_intent.getStringExtra("냉장고 id");
 
         // 카메라 권한 체크
         TedPermission.create()
@@ -105,7 +117,33 @@ public class AddFoodCameraActivity extends AppCompatActivity {
         post_btn.setOnClickListener(new View.OnClickListener() { // 식품 등록 POST 버튼
             @Override
             public void onClick(View view) {
+                if (!foodDataList.isEmpty()) {
+                    //TODO: 현재 UI에 있는 정보로 backend에 POST 요청
+                    setData(foodDataList.get(0));
+                    foodDataList.remove(0);
+                }
+                else {
+                    Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
+                    intent.putExtra("유저 id", userId);
+                    intent.putExtra("냉장고 id", received_data);
+                    startActivity(intent);
+                }
+            }
+        });
 
+        cancel_btn.setOnClickListener(new View.OnClickListener() { // 넘어가기 버튼
+            @Override
+            public void onClick(View view) {
+                if (!foodDataList.isEmpty()) {
+                    setData(foodDataList.get(0));
+                    foodDataList.remove(0);
+                }
+                else {
+                    Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
+                    intent.putExtra("유저 id", userId);
+                    intent.putExtra("냉장고 id", received_data);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -244,16 +282,18 @@ public class AddFoodCameraActivity extends AppCompatActivity {
 
     private void analyseImage(Uri uri) {
         try {
-            InputStream inputStream = getContentResolver().openInputStream(uri);
+            InputStream is = getContentResolver().openInputStream(uri);
             ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
             int bufferSize = 1024;
             byte[] buffer = new byte[bufferSize];
 
             int len;
-            while ((len = inputStream.read(buffer)) != -1) {
+            while ((len = is.read(buffer)) != -1) {
                 byteBuffer.write(buffer, 0, len);
             }
             byte[] fileBytes = byteBuffer.toByteArray();
+            Bitmap bitmap = BitmapFactory.decodeByteArray(fileBytes, 0, fileBytes.length);
+            is.close();
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 OkHttpClient client = new OkHttpClient.Builder()
@@ -294,31 +334,47 @@ public class AddFoodCameraActivity extends AppCompatActivity {
                     public void onResponse(Call call, Response response) throws IOException {
                         dialog.dismiss();
                         if (response.isSuccessful()) {
+                            BufferedSource source = response.body().source();
+                            String json = source.readString(Charset.forName("UTF-8"));
+                            try {
+                                JSONArray jsonArray = new JSONArray(json);
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                    JSONArray rect = jsonObject.getJSONArray("rect");
+                                    String date = jsonObject.getString("date");
+                                    String barcode = jsonObject.getString("barcode");
+                                    String tag = jsonObject.getString("tag");
+                                    Log.d("rect", json);
+                                    int width = bitmap.getWidth();
+                                    int height = bitmap.getHeight();
+                                    Bitmap image = Bitmap.createBitmap(
+                                            bitmap,
+                                            (int)(rect.getDouble(0)*width),
+                                            (int)(rect.getDouble(1)*height),
+                                            (int)(rect.getDouble(2)*width),
+                                            (int)(rect.getDouble(3)*height)
+                                    );
+                                    foodDataList.add(new FoodData(tag, date, barcode, image));
+                                }
+                            } catch (Exception e) {
+                                Log.e("Error: ", e.toString());
+                            }
+                            foodCnt = 0;
+                        }
+                        if (!foodDataList.isEmpty()) {
                             runOnUiThread(new Runnable() {
-                                BufferedSource source = response.body().source();
-                                String json = source.readString(Charset.forName("UTF-8"));
                                 @Override
                                 public void run() {
-                                    try {
-                                        JSONArray jsonArray = new JSONArray(json);
-                                        for (int i = 0; i < jsonArray.length(); i++) {
-                                            Log.d("test", "json"+i);
-                                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                            String date = jsonObject.getString("date");
-                                            String image = jsonObject.getString("image");
-                                            String barcode = jsonObject.getString("barcode");
-                                            String tag = jsonObject.getString("tag");
-                                            barcode_edtv.setText(barcode);
-                                            efd_edtv.setText(date);
-                                            name_edtv.setText(tag);
-                                            byte[] decode = android.util.Base64.decode(image, android.util.Base64.DEFAULT);
-                                            item_iv.setImageBitmap(BitmapFactory.decodeByteArray(decode, 0, decode.length));
-                                        }
-                                    } catch (Exception e) {
-                                        Log.e("Error: ", e.toString());
-                                    }
+                                    setData(foodDataList.get(0));
+                                    foodDataList.remove(0);
                                 }
                             });
+                        }
+                        if (foodDataList.isEmpty()) {
+                            Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
+                            intent.putExtra("유저 id", userId);
+                            intent.putExtra("냉장고 id", received_data);
+                            startActivity(intent);
                         }
                     }
                 });
@@ -326,5 +382,18 @@ public class AddFoodCameraActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("Error: ", e.toString());
         }
+    }
+    
+    private void setData(FoodData data) {
+        foodCnt++;
+        barcode_edtv.setText(data.barcode);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mfd_edtv.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        }
+        efd_edtv.setText(data.exdate);
+        name_edtv.setText(data.name);
+        item_iv.setImageBitmap(data.image);
+        num_edtv.setText("1");
+        page_tv.setText(String.format("(%d/%d)", foodCnt, foodCnt+foodDataList.size()-1));
     }
 }
