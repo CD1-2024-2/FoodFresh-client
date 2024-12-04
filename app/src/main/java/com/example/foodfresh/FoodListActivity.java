@@ -3,6 +3,8 @@ package com.example.foodfresh;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,7 +15,11 @@ import android.widget.ListView;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,10 +66,29 @@ public class FoodListActivity extends AppCompatActivity {
                 List<FoodDM> foodResponse = response.body();
 
                 food_adapter = new FoodListAdapter(user_id, refrig_id);
+
+                Bitmap[] images = new Bitmap[foodResponse.size()];
+                Thread[] threads = new Thread[foodResponse.size()];
+                MyRunnable[] runnables = new MyRunnable[foodResponse.size()];
                 for (int i=0; i<foodResponse.size(); i++) {
+                    runnables[i] = new MyRunnable(foodResponse.get(i).getImageURL(), foodResponse.get(i));
+                    threads[i] = new Thread(runnables[i]);
+                    threads[i].start();
+                }
+                for (Thread thread : threads) {
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                System.out.println("join 완료");
+                for (int i=0; i<foodResponse.size(); i++) {
+                    food_adapter.addImage(runnables[i].getImage());
                     food_adapter.addItem(foodResponse.get(i));
                 }
                 food_lv.setAdapter(food_adapter);
+                food_adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -104,75 +129,114 @@ public class FoodListActivity extends AppCompatActivity {
             }
         });
     }
-    class FoodItem implements Serializable {
-        private String fid;
-        private String imageURL;
-        private String name;
-        private Object expirationDate;
-        private Object registeredDate;
-        private int quantity;
-        private String category;
-        private String barcode;
-        private String description;
 
-        public FoodItem(FoodDM foodDM){
-            this.fid = foodDM.getId();
-            this.imageURL = foodDM.getImageURL();
-            this.name = foodDM.getName();
-            this.expirationDate = foodDM.getExpirationDate();
-            this.registeredDate = foodDM.getRegisteredDate();
-            this.quantity = foodDM.getQuantity();
-            this.category = foodDM.getCategory();
-            this.barcode = foodDM.getBarcode();
-            this.description = foodDM.getDescription();
-        }
-        public FoodItem(String fid, String imageURL, String name, Object expirationDate, Object registeredDate, int quantity, String category, String barcode, String description) {
-            this.fid = fid;
-            this.imageURL = imageURL;
-            this.name = name;
-            this.expirationDate = expirationDate;
-            this.registeredDate = registeredDate;
-            this.quantity = quantity;
-            this.category = category;
-            this.barcode = barcode;
-            this.description = description;
+    public class MyRunnable implements Runnable {
+        private Bitmap image;
+        private String uri;
+        private FoodDM foodDM;
+
+        MyRunnable(String uri, FoodDM foodDM) {
+            this.uri = uri;
+            this.foodDM = foodDM;
         }
 
-        public String getFid() {
-            return fid;
+        public Bitmap getImage() {
+            return image;
         }
 
-        public String getImageURL() {
-            return imageURL;
+        @Override
+        public void run() {
+            this.image = getBitmapFromURL(this.foodDM.getImageURL());
         }
+    }
 
-        public String getName() {
-            return name;
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            Log.e("src",src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
         }
+    }
+}
 
-        public Object getExpirationDate() {
-            return expirationDate;
-        }
+class FoodItem implements Serializable {
+    private String fid;
+    private String imageURL;
+    private String name;
+    private Object expirationDate;
+    private Object registeredDate;
+    private int quantity;
+    private String category;
+    private String barcode;
+    private String description;
 
-        public Object getRegisteredDate() {
-            return registeredDate;
-        }
+    public FoodItem(FoodDM foodDM){
+        this.fid = foodDM.getId();
+        this.imageURL = foodDM.getImageURL();
+        this.name = foodDM.getName();
+        this.expirationDate = foodDM.getExpirationDate();
+        this.registeredDate = foodDM.getRegisteredDate();
+        this.quantity = foodDM.getQuantity();
+        this.category = foodDM.getCategory();
+        this.barcode = foodDM.getBarcode();
+        this.description = foodDM.getDescription();
+    }
+    public FoodItem(String fid, String imageURL, String name, Object expirationDate, Object registeredDate, int quantity, String category, String barcode, String description) {
+        this.fid = fid;
+        this.imageURL = imageURL;
+        this.name = name;
+        this.expirationDate = expirationDate;
+        this.registeredDate = registeredDate;
+        this.quantity = quantity;
+        this.category = category;
+        this.barcode = barcode;
+        this.description = description;
+    }
 
-        public int getQuantity() {
-            return quantity;
-        }
+    public String getFid() {
+        return fid;
+    }
 
-        public String getCategory() {
-            return category;
-        }
+    public String getImageURL() {
+        return imageURL;
+    }
 
-        public String getBarcode() {
-            return barcode;
-        }
+    public String getName() {
+        return name;
+    }
 
-        public String getDescription() {
-            return description;
-        }
+    public Object getExpirationDate() {
+        return expirationDate;
+    }
+
+    public Object getRegisteredDate() {
+        return registeredDate;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
 
