@@ -122,57 +122,57 @@ public class AddFoodCameraActivity extends AppCompatActivity {
         post_btn.setOnClickListener(new View.OnClickListener() { // 식품 등록 POST 버튼
             @Override
             public void onClick(View view) {
-                if (!foodDataList.isEmpty()) {
-                    String fileName = UUID.randomUUID().toString() + ".jpg";
-                    File directory = new File(AddFoodCameraActivity.this.getApplicationContext().getCacheDir(), "images");
-                    if (!directory.exists()) directory.mkdirs();
+                String fileName = UUID.randomUUID().toString() + ".jpg";
+                File directory = new File(AddFoodCameraActivity.this.getApplicationContext().getCacheDir(), "images");
+                if (!directory.exists()) directory.mkdirs();
 
-                    File file = new File(directory, fileName);
-                    try (FileOutputStream outputStream = new FileOutputStream(file)) {
-                        foodDataList.get(0).image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                        outputStream.flush();
-                    } catch (IOException e) {
-                        Log.e("Error", e.toString());
-                    }
-                    Dialog dialog = new LoadingDialog(AddFoodCameraActivity.this);
-                    dialog.setCancelable(false);
-                    dialog.show();
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-                    StorageReference fileReference = storageReference.child(fileName);
-                    fileReference.putFile(Uri.fromFile(file))
-                            .addOnSuccessListener(taskSnapshot -> {
-                                fileReference.getDownloadUrl()
-                                        .addOnSuccessListener(uri -> {
-                                            dialog.dismiss();
-                                            createFood(received_data, getFoodDM(uri.toString()));
+                File file = new File(directory, fileName);
+                try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                    foodDataList.get(0).image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    outputStream.flush();
+                } catch (IOException e) {
+                    Log.e("Error", e.toString());
+                }
+                Dialog dialog = new LoadingDialog(AddFoodCameraActivity.this);
+                dialog.setCancelable(false);
+                dialog.show();
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                StorageReference fileReference = storageReference.child(fileName);
+                fileReference.putFile(Uri.fromFile(file))
+                        .addOnSuccessListener(taskSnapshot -> {
+                            fileReference.getDownloadUrl()
+                                    .addOnSuccessListener(uri -> {
+                                        dialog.dismiss();
+                                        createFood(received_data, getFoodDM(uri.toString()));
+                                        foodDataList.remove(0);
+                                        if (!foodDataList.isEmpty()) {
                                             setData(foodDataList.get(0));
-                                            foodDataList.remove(0);
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            dialog.dismiss();
-                                            Log.e("Error", e.toString());
-                                        });
-                            })
-                            .addOnFailureListener(e -> {
-                                dialog.dismiss();
-                                Log.e("Error", e.toString());
-                            });
-                }
-                else {
-                    Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
-                    intent.putExtra("유저 id", userId);
-                    intent.putExtra("냉장고 id", received_data);
-                    startActivity(intent);
-                }
+                                        }
+                                        else {
+                                            Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
+                                            intent.putExtra("유저 id", userId);
+                                            intent.putExtra("냉장고 id", received_data);
+                                            startActivity(intent);
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        dialog.dismiss();
+                                        Log.e("Error", e.toString());
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            dialog.dismiss();
+                            Log.e("Error", e.toString());
+                        });
             }
         });
 
         cancel_btn.setOnClickListener(new View.OnClickListener() { // 넘어가기 버튼
             @Override
             public void onClick(View view) {
+                foodDataList.remove(0);
                 if (!foodDataList.isEmpty()) {
                     setData(foodDataList.get(0));
-                    foodDataList.remove(0);
                 }
                 else {
                     Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
@@ -401,7 +401,6 @@ public class AddFoodCameraActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     setData(foodDataList.get(0));
-                                    foodDataList.remove(0);
                                 }
                             });
                         }
