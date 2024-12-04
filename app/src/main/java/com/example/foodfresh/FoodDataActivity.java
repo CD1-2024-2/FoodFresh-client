@@ -18,6 +18,9 @@ import android.widget.TextView;
 import java.io.IOException;
 
 public class FoodDataActivity extends AppCompatActivity {
+    private String user_id;
+    private String refrig_id;
+    private FoodDM foodDM;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +35,23 @@ public class FoodDataActivity extends AppCompatActivity {
         TextView num_edtv = findViewById(R.id.foodData_num_textview);
         TextView note_edtv = findViewById(R.id.foodData_note_textview);
         Button del_btn = findViewById(R.id.foodData_del_button);
-        Button fix_post_btn = findViewById(R.id.foodData_post_button);
+        Button del_reason_btn = findViewById(R.id.foodData_del_reason_button);
 
 
+        Intent intent = getIntent();
+        user_id = intent.getStringExtra("사용자 id");
+        refrig_id = intent.getStringExtra("냉장고 id");
+        foodDM = (FoodDM)intent.getSerializableExtra("식품 정보");
 
-        del_btn.setOnClickListener(new View.OnClickListener() {
+        barcode_edtv.setText(foodDM.getBarcode());
+        name_edtv.setText(foodDM.getName());
+        mfd_edtv.setText("고쳐야 함");
+        efd_edtv.setText("고쳐야 함");
+        category_edtv.setText(foodDM.getCategory());
+        num_edtv.setText(Integer.toString(foodDM.getQuantity()));
+        note_edtv.setText(foodDM.getDescription());
+
+        del_reason_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent popup_intent = new Intent(FoodDataActivity.this, PopupDeleteActivity.class);

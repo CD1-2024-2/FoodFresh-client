@@ -49,18 +49,18 @@ public class AddMemberActivity extends AppCompatActivity {
                     public void onResponse(Call<MessageDM> call, Response<MessageDM> response) {
                         if(!response.isSuccessful()) {
                             Log.e("연결 비정상", response.toString());
+                            message_tv.setText("냉장고 멤버 추가에 실패하였습니다.");
                             return;
                         }
-                        Log.d("연결 성공", response.body().toString());
-                        MessageDM messageDM = response.body();
-                        message_tv.setText(messageDM.getMessage());
-                        Toast.makeText(getApplicationContext(), messageDM.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("연결 성공", "멤버 추가 완료");
+                        Toast.makeText(getApplicationContext(), "멤버가 ㅣ추가 되었습니다.", Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
                     @Override
                     public void onFailure(Call<MessageDM> call, Throwable t) {
                         Log.v("연결 실패", t.getMessage());
+                        message_tv.setText("서버 연결에 실패하였습니다.");
                     }
                 });
             }

@@ -3,6 +3,8 @@ package com.example.foodfresh;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class RegisterDM {
@@ -60,14 +62,44 @@ class LoginDM {
     }
 }
 
+class RefrigAddDM {
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    public RefrigAddDM(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
 class RefrigDM {
-    @SerializedName("id")
+    @SerializedName("rid")
     @Expose
     private String id;
 
     @SerializedName("name")
     @Expose
     private String name;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    @SerializedName("createdDate")
+    @Expose
+    private String createdDate;
 
     @SerializedName("manager")
     @Expose
@@ -81,16 +113,14 @@ class RefrigDM {
     @Expose
     private boolean isShared;
 
-    public RefrigDM(String id, String name, String manager, String[] sharedUsers, boolean  isShared) {
+    public RefrigDM(String id, String name, String description, String createdDate, String manager, String[] sharedUsers, boolean isShared) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.createdDate = createdDate;
         this.manager = manager;
         this.sharedUsers = sharedUsers;
         this.isShared = isShared;
-    }
-
-    public RefrigDM() {
-
     }
 
     public String getId() {
@@ -99,6 +129,14 @@ class RefrigDM {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getCreatedDate() {
+        return createdDate;
     }
 
     public String getManager() {
@@ -123,13 +161,17 @@ class MessageDM {
         this.message = message;
     }
 
+    public MessageDM() {
+
+    }
+
     public String getMessage() {
         return message;
     }
 }
 
 class MemberDM {
-    @SerializedName("sharedUsers")
+    @SerializedName("sharedUserIds")
     @Expose
     private String[] sharedUsers;
 
@@ -142,7 +184,10 @@ class MemberDM {
     }
 }
 
-class FoodDM {
+class FoodDM implements Serializable {
+    @SerializedName("fid")
+    @Expose
+    private String fid;
     @SerializedName("imageURL")
     @Expose
     private String imageURL;
@@ -154,6 +199,10 @@ class FoodDM {
     @SerializedName("expirationDate")
     @Expose
     private String expirationDate;
+
+    @SerializedName("registeredDate")
+    @Expose
+    private String registeredDate;
 
     @SerializedName("quantity")
     @Expose
@@ -171,14 +220,20 @@ class FoodDM {
     @Expose
     private String description;
 
-    public FoodDM(String imageURL, String name, String expirationDate, int quantity, String category, String barcode, String description) {
+    public FoodDM(String fid, String imageURL, String name, String expirationDate, String registeredDate, int quantity, String category, String barcode, String description) {
+        this.fid = fid;
         this.imageURL = imageURL;
         this.name = name;
         this.expirationDate = expirationDate;
+        this.registeredDate = registeredDate;
         this.quantity = quantity;
         this.category = category;
         this.barcode = barcode;
         this.description = description;
+    }
+
+    public String getId() {
+        return fid;
     }
 
     public String getImageURL() {
@@ -191,6 +246,10 @@ class FoodDM {
 
     public String getExpirationDate() {
         return expirationDate;
+    }
+
+    public String getRegisteredDate() {
+        return registeredDate;
     }
 
     public int getQuantity() {
