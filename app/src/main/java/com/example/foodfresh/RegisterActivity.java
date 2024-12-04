@@ -28,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button signin_post_btn;
     private TextView message_tv;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = password_edtv.getText().toString();
                 RegisterDM registerDM = new RegisterDM(id, nickname, password);
 
-                Call call;
+                Call<MessageDM> call;
                 call = RetrofitClient.getApiService().register_api_post(registerDM);
                 call.enqueue(new Callback() {
                     @Override
@@ -59,10 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
                             message_tv.setText("회원가입에 실패했습니다.");
                             return;
                         }
-//                        RegisterDM RegisterResponse = response.body();
-                        Log.d("연결 성공", response.body().toString());
-                        Intent intent = getParentActivityIntent();
-                        startActivity(intent);
+                        Log.d("연결 성공", "회원가입 성공ㅅ");
                         finish();
                     }
 

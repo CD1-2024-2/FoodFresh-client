@@ -72,7 +72,6 @@ class FoodData {
     }
 }
 
-
 public class AddFoodCameraActivity extends AppCompatActivity {
     private int foodCnt;
     // 카메라
@@ -433,8 +432,8 @@ public class AddFoodCameraActivity extends AppCompatActivity {
         page_tv.setText(String.format("(%d/%d)", foodCnt, foodCnt+foodDataList.size()-1));
     }
 
-    private FoodDM getFoodDM(String imgURL) {
-        return new FoodDM(
+    private AddFoodDM getFoodDM(String imgURL) {
+        return new AddFoodDM(
                 imgURL,
                 name_edtv.getText().toString(),
                 efd_edtv.getText().toString(),
@@ -444,7 +443,7 @@ public class AddFoodCameraActivity extends AppCompatActivity {
                 note_edtv.getText().toString()
         );
     }
-    private void createFood(String refrigeratorId, FoodDM food) {
+    private void createFood(String refrigeratorId, AddFoodDM food) {
         retrofit2.Call<Void> call;
         call = RetrofitClient.getApiService().create_food_api(refrigeratorId, food);
         call.enqueue(new retrofit2.Callback<Void>() {

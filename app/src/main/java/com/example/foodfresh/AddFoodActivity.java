@@ -135,8 +135,8 @@ public class AddFoodActivity extends AppCompatActivity {
                 }
             }
     );
-    private FoodDM getFoodDM(String imgURL) {
-        return new FoodDM(
+    private AddFoodDM getFoodDM(String imgURL) {
+        return new AddFoodDM(
                 imgURL,
                 name_edtv.getText().toString(),
                 efd_edtv.getText().toString(),
@@ -146,7 +146,7 @@ public class AddFoodActivity extends AppCompatActivity {
                 note_edtv.getText().toString()
         );
     }
-    private void createFood(String refrigeratorId, FoodDM food) {
+    private void createFood(String refrigeratorId, AddFoodDM food) {
         retrofit2.Call<Void> call;
         call = RetrofitClient.getApiService().create_food_api(refrigeratorId, food);
         call.enqueue(new retrofit2.Callback<Void>() {
