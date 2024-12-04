@@ -19,6 +19,9 @@ public interface RetrofitInterface {
     @POST("/api/v1/user/login")
     Call<LoginActivity.UserInfoTest> login_api_post(@Body LoginDM login);
 
+    @POST("/api/v1/refrigerator/{refrigeratorId}/food/add")
+    Call<Void> create_food_api(@Path("refrigeratorId") String refrigeratorId, @Body AddFoodDM food);
+
     @GET("/api/v1/refrigerator/accessible")
     Call<List<RefrigDM>> refrig_api_get(@Query("userId") String userId);
 
@@ -44,10 +47,4 @@ public interface RetrofitInterface {
 
     @GET("/api/v1/refrigerator/{refrigeratorId}/food/list")
     Call<List<FoodDM>> food_api_get(@Path("refrigeratorId") String refrigId);
-
-    // 식품 추가 api
-    @POST("/api/v1/refrigerator/{refrigeratorId}/food/add")
-    Call<MessageDM> addFood_api_post(
-            @Path("refrigeratorId") String refrigId,
-            @Body FoodDM food);
 }

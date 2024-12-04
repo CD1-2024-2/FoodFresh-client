@@ -184,6 +184,74 @@ class MemberDM {
     }
 }
 
+class AddFoodDM implements Serializable {
+    @SerializedName("imageURL")
+    @Expose
+    private String imageURL;
+
+    @SerializedName("name")
+    @Expose
+    private String name;
+
+    @SerializedName("expirationDate")
+    @Expose
+    private String expirationDate;
+
+    @SerializedName("quantity")
+    @Expose
+    private int quantity;
+
+    @SerializedName("category")
+    @Expose
+    private String category;
+
+    @SerializedName("barcode")
+    @Expose
+    private String barcode;
+
+    @SerializedName("description")
+    @Expose
+    private String description;
+
+    public AddFoodDM(String imageURL, String name, String expirationDate, int quantity, String category, String barcode, String description) {
+        this.imageURL = imageURL;
+        this.name = name;
+        this.expirationDate = expirationDate;
+        this.quantity = quantity;
+        this.category = category;
+        this.barcode = barcode;
+        this.description = description;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getExpirationDate() {
+        return expirationDate;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
+
 class FoodDM implements Serializable {
     @SerializedName("fid")
     @Expose
