@@ -243,16 +243,16 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp">
         <Button
-            android:id="@+id/foodData_post_button"
-            android:text="저장"
+            android:id="@+id/foodData_del_button"
+            android:text="단순 삭제"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <Space
             android:layout_width="100dp"
             android:layout_height="wrap_content"/>
         <Button
-            android:id="@+id/foodData_del_button"
-            android:text="삭제"
+            android:id="@+id/foodData_del_reason_button"
+            android:text="소모 처리"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>

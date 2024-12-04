@@ -31,8 +31,8 @@ public class RefrigListActivity extends AppCompatActivity {
     private LoginActivity.UserInfoTest userinfo;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_refrig_list);
 
         refrig_lv = findViewById(R.id.refrigList_listview);
@@ -54,12 +54,11 @@ public class RefrigListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<RefrigDM>> call, Response<List<RefrigDM>> response) {
                 if(!response.isSuccessful()) {
-                    Log.e("연결 비정상", Integer.toString(response.code()));
                     Log.e("연결 비정상", (response.toString()));
                     return;
                 }
                 List<RefrigDM> refirgResponse = response.body();
-                Log.d("연결 성공", refirgResponse.get(0).getManager());
+                Log.d("연결 성공", "냉장고 목록 불러오기 성공");
 
                 refrig_adapter = new RefrigListAdapter(user_id);
                 for (int i=0; i<refirgResponse.size(); i++) {
@@ -75,26 +74,22 @@ public class RefrigListActivity extends AppCompatActivity {
             }
         });
 
-        // 초기 데이터
-//        refrig_adapter.addItem(new RefrigListItem("001", "냉장고1", 1, "1111-11-11", true));
-//        refrig_adapter.addItem(new RefrigListItem("002", "냉장고2", 2, "2222-22-22", false));
-//        refrig_adapter.addItem(new RefrigListItem("003", "냉장고3", 3, "3333-33-33", false));
-
 
         // Listview 클릭 이벤트
         refrig_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(RefrigListActivity.this, FoodListActivity.class);
-                intent.putExtra("냉장고 id", refrig_adapter.getItem(i).getId()); // 수정필요: index 활용 말고 별개 냉장고 id 값을 보유, 사용해야함 (RefrigListItem 수정 필요)
+                intent.putExtra("사용자 id", user_id);
+                intent.putExtra("냉장고 id", refrig_adapter.getItem(position).getId());
                 startActivity(intent);
-//                Toast.makeText(getApplicationContext(), "RefrigList -> Refrig", Toast.LENGTH_SHORT).show();
             }
         });
         refrig_add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RefrigListActivity.this, AddRefrigActivity.class);
+                System.out.println(user_id);
                 intent.putExtra("사용자 id", user_id);
                 startActivity(intent);
             }
@@ -109,5 +104,8 @@ public class RefrigListActivity extends AppCompatActivity {
 //                finish();
             }
         });
+    }
+    public void refreshActivtiy(){
+        recreate();
     }
 }

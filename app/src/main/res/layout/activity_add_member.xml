@@ -57,7 +57,6 @@
 
             <TextView
                 android:id="@+id/addMember_message_textview"
-                android:text="Any test text can be here"
                 android:textSize="10dp"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
