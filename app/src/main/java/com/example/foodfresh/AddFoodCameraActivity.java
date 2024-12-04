@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -45,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -67,6 +71,7 @@ class FoodData {
         this.image = image;
     }
 }
+
 
 public class AddFoodCameraActivity extends AppCompatActivity {
     private int foodCnt;
@@ -118,9 +123,40 @@ public class AddFoodCameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!foodDataList.isEmpty()) {
-                    //TODO: 현재 UI에 있는 정보로 backend에 POST 요청
-                    setData(foodDataList.get(0));
-                    foodDataList.remove(0);
+                    String fileName = UUID.randomUUID().toString() + ".jpg";
+                    File directory = new File(AddFoodCameraActivity.this.getApplicationContext().getCacheDir(), "images");
+                    if (!directory.exists()) directory.mkdirs();
+
+                    File file = new File(directory, fileName);
+                    try (FileOutputStream outputStream = new FileOutputStream(file)) {
+                        foodDataList.get(0).image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                        outputStream.flush();
+                    } catch (IOException e) {
+                        Log.e("Error", e.toString());
+                    }
+                    Dialog dialog = new LoadingDialog(AddFoodCameraActivity.this);
+                    dialog.setCancelable(false);
+                    dialog.show();
+                    StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                    StorageReference fileReference = storageReference.child(fileName);
+                    fileReference.putFile(Uri.fromFile(file))
+                            .addOnSuccessListener(taskSnapshot -> {
+                                fileReference.getDownloadUrl()
+                                        .addOnSuccessListener(uri -> {
+                                            dialog.dismiss();
+                                            createFood(received_data, getFoodDM(uri.toString()));
+                                            setData(foodDataList.get(0));
+                                            foodDataList.remove(0);
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            dialog.dismiss();
+                                            Log.e("Error", e.toString());
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                dialog.dismiss();
+                                Log.e("Error", e.toString());
+                            });
                 }
                 else {
                     Intent intent = new Intent(AddFoodCameraActivity.this, FoodListActivity.class);
@@ -344,7 +380,6 @@ public class AddFoodCameraActivity extends AppCompatActivity {
                                     String date = jsonObject.getString("date");
                                     String barcode = jsonObject.getString("barcode");
                                     String tag = jsonObject.getString("tag");
-                                    Log.d("rect", json);
                                     int width = bitmap.getWidth();
                                     int height = bitmap.getHeight();
                                     Bitmap image = Bitmap.createBitmap(
@@ -386,14 +421,42 @@ public class AddFoodCameraActivity extends AppCompatActivity {
     
     private void setData(FoodData data) {
         foodCnt++;
+        item_iv.setImageBitmap(data.image);
         barcode_edtv.setText(data.barcode);
+        name_edtv.setText(data.name);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mfd_edtv.setText(new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         }
         efd_edtv.setText(data.exdate);
-        name_edtv.setText(data.name);
-        item_iv.setImageBitmap(data.image);
+        category_edtv.setText("category");
         num_edtv.setText("1");
+        note_edtv.setText("memo");
         page_tv.setText(String.format("(%d/%d)", foodCnt, foodCnt+foodDataList.size()-1));
+    }
+
+    private FoodDM getFoodDM(String imgURL) {
+        return new FoodDM(
+                imgURL,
+                name_edtv.getText().toString(),
+                efd_edtv.getText().toString(),
+                Integer.parseInt(num_edtv.getText().toString()),
+                category_edtv.getText().toString(),
+                barcode_edtv.getText().toString(),
+                note_edtv.getText().toString()
+        );
+    }
+    private void createFood(String refrigeratorId, FoodDM food) {
+        retrofit2.Call<Void> call;
+        call = RetrofitClient.getApiService().create_food_api(refrigeratorId, food);
+        call.enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                if(!response.isSuccessful()) {}
+            }
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                Log.e("Error", t.getMessage());
+            }
+        });
     }
 }

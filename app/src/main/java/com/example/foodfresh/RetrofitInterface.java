@@ -14,4 +14,7 @@ public interface RetrofitInterface {
 
     @POST("/api/v1/user/login")
     Call<LoginActivity.UserInfoTest> login_api_post(@Body LoginDM login);
+
+    @POST("/api/v1/refrigerator/{refrigeratorId}/food/add")
+    Call<Void> create_food_api(@Path("refrigeratorId") String refrigeratorId, @Body FoodDM food);
 }
