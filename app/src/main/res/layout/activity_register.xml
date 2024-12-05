@@ -102,11 +102,14 @@
 
         <Button
             android:id="@+id/siginin_post_button"
+            android:text="회원가입"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_marginTop="30dp"
-            android:text="회원가입"/>
+            android:background="@drawable/shape_backgound_round" />
 
         <TextView
             android:id="@+id/signin_message_textview"
