@@ -265,15 +265,20 @@
             <Button
                 android:id="@+id/addFoodCam_post_btn"
                 android:text="등록하기"
+                android:textStyle="bold"
                 android:layout_margin="8dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_backgound_round" />
             <Button
                 android:id="@+id/addFoodCam_cancel_btn"
                 android:layout_margin="8dp"
                 android:text="넘어가기"
+                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_backgound_round" />
         </LinearLayout>
     </LinearLayout>
 

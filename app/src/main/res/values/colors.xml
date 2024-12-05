@@ -35,4 +35,11 @@
     <color name="blue_dark">#FF6A7B8B</color>
     <color name="blue_light">#FFB3C5CF</color>
 
+    <!--    색조합[1]-->
+    <color name="pal2_blue_light">#7CBAC9</color>
+    <color name="pal2_blue_default">#01A6BC</color>
+    <color name="pal2_blue_dark">#006583</color>
+    <color name="pal2_brown_light">#B3A197</color>
+    <color name="pal2_ivory">#E8E4D9</color>
+
 </resources>

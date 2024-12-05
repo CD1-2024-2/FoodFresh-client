@@ -105,7 +105,7 @@ public class FoodListAdapter extends BaseAdapter {
 
             String str = "D";
             if (days < 0) {
-                str += "-"+Long.toString(days);
+                str += Long.toString(days);
                 expiry_dot_iv.setImageResource(R.drawable.ic_dot_red);
             }
             else {

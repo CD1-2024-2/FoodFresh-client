@@ -245,15 +245,21 @@
         <Button
             android:id="@+id/foodData_del_button"
             android:text="단순 삭제"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_backgound_round" />
         <Space
             android:layout_width="100dp"
             android:layout_height="wrap_content"/>
         <Button
             android:id="@+id/foodData_del_reason_button"
             android:text="소모 처리"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_backgound_round" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
