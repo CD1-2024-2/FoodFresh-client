@@ -16,7 +16,7 @@
             android:text="식품 소모처리"
             android:textSize="20dp"
             android:textColor="#FFF"
-            android:background="@color/gray"
+            android:background="@color/pal2_blue_light"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
